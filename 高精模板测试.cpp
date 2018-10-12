@@ -38,14 +38,12 @@ struct Longnum{
         return x*cas;
     }
 };
-
 ostream& operator <<(ostream& os,const Longnum &x){
     if(x.len==0){os<<0;return os;}
     if(x.cas==-1)os<<'-';
     for(int i=x.len;i>=1;i--)os<<x.a[i];
     return os;
 }
-
 istream& operator >>(istream& is,Longnum &x){
     memset(x.a,0,sizeof(x.a));
     int *t=new int[Longnum_max_lenth];
@@ -62,7 +60,6 @@ istream& operator >>(istream& is,Longnum &x){
     delete []ch;
     return is;
 }
-
 inline bool operator <(const Longnum &a,const Longnum &b){
     if(a.cas!=b.cas)return a.cas<b.cas;bool ret=(a.cas==-1);
     if(a.len!=b.len)return (a.len<b.len)^ret;
@@ -84,11 +81,9 @@ inline bool operator ==(const Longnum &a,const Longnum &b){
 inline bool operator <=(const Longnum &a,const Longnum &b){return a<b||a==b;}
 inline bool operator >=(const Longnum &a,const Longnum &b){return a>b||a==b;}
 inline bool operator !=(const Longnum &a,const Longnum &b){return !(a==b);}
-
 inline Longnum max(Longnum a,Longnum b){if(a>b)return a;else return b;}
 inline Longnum min(Longnum a,Longnum b){if(a<b)return a;else return b;}
 inline Longnum abs(Longnum a){if(a.cas=-1)a.cas=1;return a;}
-
 inline Longnum merge_add(Longnum a,Longnum b){
     Longnum Ret;Ret.len=max(a.len,b.len);
     memset(Ret.a,0,sizeof(Ret.a));
@@ -131,41 +126,39 @@ inline Longnum operator -(Longnum a,Longnum b){
 }
 inline Longnum operator +=(Longnum &a,Longnum b){a=a+b;}
 inline Longnum operator -=(Longnum &a,Longnum b){a=a-b;}
-
 struct cpx{
-  double r,i;
-  inline cpx operator *(const cpx&x)const{return (cpx){r*x.r-i*x.i,r*x.i+i*x.r};}
-  inline cpx operator +(const cpx&x)const{return (cpx){r+x.r,i+x.i};}
-  inline cpx operator -(const cpx&x)const{return (cpx){r-x.r,i-x.i};}
+  	double r,i;
+  	inline cpx operator *(const cpx&x)const{return (cpx){r*x.r-i*x.i,r*x.i+i*x.r};}
+  	inline cpx operator +(const cpx&x)const{return (cpx){r+x.r,i+x.i};}
+  	inline cpx operator -(const cpx&x)const{return (cpx){r-x.r,i-x.i};}
 }cpxa[Longnum_max_lenth],cpxb[Longnum_max_lenth];
 int R[Longnum_max_lenth];
 void FFT(cpx*a,int f,int la){
-  int n=la;
-  for(register int i=0;i<n;++i)if(i<R[i])swap(a[i],a[R[i]]);
-  for(register int i=1;i<n;i<<=1){
-    cpx wn=(cpx){cos(pi/i),f*sin(pi/i)};
-    for(register int j=0;j<n;j+=(i<<1)){
-      cpx w=(cpx){1,0};
-      for(register int k=0;k<i;++k,w=w*wn){
-          cpx x=a[j+k],y=w*a[j+k+i];
-          a[j+k]=x+y;a[j+k+i]=x-y;
-      }
-    }
-  }
-  if(f==-1)
-  for(register int i=0;i<n;i++)a[i].r/=n;
+  	int n=la;
+  	for(register int i=0;i<n;++i)if(i<R[i])swap(a[i],a[R[i]]);
+  	for(register int i=1;i<n;i<<=1){
+    	cpx wn=(cpx){cos(pi/i),f*sin(pi/i)};
+    	for(register int j=0;j<n;j+=(i<<1)){
+      		cpx w=(cpx){1,0};
+      		for(register int k=0;k<i;++k,w=w*wn){
+          	cpx x=a[j+k],y=w*a[j+k+i];
+          	a[j+k]=x+y;a[j+k+i]=x-y;
+      		}
+   		}
+  	}
+  	if(f==-1)
+  	for(register int i=0;i<n;i++)a[i].r/=n;
 }
 int merge_fft(cpx *a,cpx *b,int la,int lb){
-  int n=la,m=lb;
-  int L=0;for(m+=n,n=1;n<=m;n<<=1)L++;
-  for(register int i=0;i<n;i++)
-  R[i]=(R[i>>1]>>1)|((i&1)<<(L-1));
-  FFT(a,1,n);FFT(b,1,n);
-  for(register int i=0;i<=n;i++)a[i]=a[i]*b[i];
-  FFT(a,-1,n);
-  return m;
+  	int n=la,m=lb;
+  	int L=0;for(m+=n,n=1;n<=m;n<<=1)L++;
+  	for(register int i=0;i<n;i++)
+  	R[i]=(R[i>>1]>>1)|((i&1)<<(L-1));
+  	FFT(a,1,n);FFT(b,1,n);
+  	for(register int i=0;i<=n;i++)a[i]=a[i]*b[i];
+  	FFT(a,-1,n);
+  	return m;
 }
-
 inline Longnum operator *(const Longnum &a,const Longnum &b){
     memset(R,0,sizeof(R));
     memset(cpxa,0,sizeof(cpxa));
@@ -174,13 +167,13 @@ inline Longnum operator *(const Longnum &a,const Longnum &b){
     memset(Ret.a,0,sizeof(Ret.a));
     Ret.cas=a.cas*b.cas;
     for(register int i=0;i<=a.len;i++)cpxa[i].r=a.a[i];
-  for(register int i=0;i<=b.len;i++)cpxb[i].r=b.a[i];
-  Ret.len=merge_fft(cpxa,cpxb,a.len,b.len)-1;
-  for(register int i=1;i<=Ret.len;i++)
+  	for(register int i=0;i<=b.len;i++)cpxb[i].r=b.a[i];
+  	Ret.len=merge_fft(cpxa,cpxb,a.len,b.len)-1;
+  	for(register int i=1;i<=Ret.len;i++)
     {Ret.a[i]+=(int)(cpxa[i+1].r+0.1);Ret.a[i+1]+=Ret.a[i]/10;Ret.a[i]%=10;}
-  if(Ret.a[Ret.len+1])Ret.len++;
-  while(Ret.a[Ret.len]==0&&Ret.len>=1)Ret.len--;
-  return Ret;
+  	if(Ret.a[Ret.len+1])Ret.len++;
+  	while(Ret.a[Ret.len]==0&&Ret.len>=1)Ret.len--;
+  	return Ret;
 }
 inline Longnum operator *=(Longnum &a,Longnum b){a=a*b;}
 inline void merge_mid(Longnum &a){
@@ -206,14 +199,74 @@ inline Longnum operator /(Longnum &a,Longnum &b){
 inline Longnum operator /=(Longnum &a,Longnum b){a=a/b;}
 inline Longnum operator %(Longnum &a,Longnum &b){Longnum g=a/b;g*=b;return a-g;}
 inline Longnum operator %=(Longnum &a,Longnum b){a=a%b;}
+inline Longnum operator ++(Longnum &a)
+{
+	if(a.cas==0)a.cas=1,a.len=1,a.a[1]=1;
+	else if(a.cas==1)
+	{
+		a.a[1]++;
+		for(int i=1;i<=a.len;i++)
+		{
+			if(a.a[i]<10)break;
+			a.a[i]%=10;a.a[i+1]++;
+		}
+		if(a.a[a.len+1]!=0)a.len++;
+	}
+	else
+	{
+		a.a[1]--;
+		if(a.len==1&&a.a[1]==0)
+		{
+			a.cas=0;a.len=0;
+			return a;
+		}
+		for(int i=1;i<=a.len;i++)
+		{
+			if(a.a[i]>0)break;
+			a.a[i]+=10;a.a[i+1]--;
+		}
+		if(a.a[a.len]==0)a.len--;
+	}
+	return a;
+}
+inline Longnum operator --(Longnum &a)
+{
+	if(a.cas==0)a.cas=-1,a.len=1,a.a[1]=1;
+	else if(a.cas==-1)
+	{
+		a.a[1]++;
+		for(int i=1;i<=a.len;i++)
+		{
+			if(a.a[i]<10)break;
+			a.a[i]%=10;a.a[i+1]++;
+		}
+		if(a.a[a.len+1]!=0)a.len++;
+	}
+	else
+	{
+		a.a[1]--;
+		if(a.len==1&&a.a[1]==0)
+		{
+			a.cas=0;a.len=0;
+			return a;
+		}
+		for(int i=1;i<=a.len;i++)
+		{
+			if(a.a[i]>=0)break;
+			a.a[i]+=10;a.a[i+1]--;
+		}
+		if(a.a[a.len]==0)a.len--;
+	}
+	return a;
+}
 Longnum a,b,c; 
 int main()
 {
 	int Size = 32<<20;
-  char *X = (char*)malloc(Size) + Size;
-  __asm__("movl %0, %%esp\n" :: "r"(X));
-  a=123456123,b=1000;c=a%b;
-  cout<<c<<endl;
+    char *X = (char*)malloc(Size) + Size;
+    __asm__("movl %0, %%esp\n" :: "r"(X));
+    a=123456129,b=1000;
+    ++a;--b;
+    cout<<a<<endl<<b<<endl;
 	return 0;
 }
-
